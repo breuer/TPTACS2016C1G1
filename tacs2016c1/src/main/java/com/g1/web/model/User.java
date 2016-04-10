@@ -6,6 +6,8 @@ public class User {
 	     
 	    private String name;
 	     
+	    private String password;
+	    
 	    private int age;
 	     
 	    private double salary;
@@ -13,7 +15,12 @@ public class User {
 	    public User(){
 	        id=0;
 	    }
-	     
+	    
+	    public User(String username, String password) {
+	    	this.name = username;
+	    	this.password = password;
+	    }
+	    
 	    public User(long id, String name, int age, double salary){
 	        this.id = id;
 	        this.name = name;
@@ -80,6 +87,14 @@ public class User {
 	        return "User [id=" + id + ", name=" + name + ", age=" + age
 	                + ", salary=" + salary + "]";
 	    }
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
 	 
 	 
 	}

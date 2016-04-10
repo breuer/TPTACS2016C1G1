@@ -81,4 +81,8 @@ public class UserService {
         users.clear();
     }
  
+    
+   public void createUser(String username, String password) {
+   		this.saveUser(new User(username, password));
+   }
 }
