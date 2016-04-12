@@ -1,5 +1,7 @@
 package com.g1.web.model;
 
+import java.util.Date;
+
 public class User {
 		 
 	    private long id;
@@ -8,10 +10,8 @@ public class User {
 	     
 	    private String password;
 	    
-	    private int age;
+	    private Date ultimoAcceso;
 	     
-	    private double salary;
-	 
 	    public User(){
 	        id=0;
 	    }
@@ -21,11 +21,9 @@ public class User {
 	    	this.password = password;
 	    }
 	    
-	    public User(long id, String name, int age, double salary){
+	    public User(long id, String name){
 	        this.id = id;
 	        this.name = name;
-	        this.age = age;
-	        this.salary = salary;
 	    }
 	     
 	    public long getId() {
@@ -44,21 +42,6 @@ public class User {
 	        this.name = name;
 	    }
 	 
-	    public int getAge() {
-	        return age;
-	    }
-	 
-	    public void setAge(int age) {
-	        this.age = age;
-	    }
-	 
-	    public double getSalary() {
-	        return salary;
-	    }
-	 
-	    public void setSalary(double salary) {
-	        this.salary = salary;
-	    }
 	 
 	    @Override
 	    public int hashCode() {
@@ -81,12 +64,6 @@ public class User {
 	            return false;
 	        return true;
 	    }
-	 
-	    @Override
-	    public String toString() {
-	        return "User [id=" + id + ", name=" + name + ", age=" + age
-	                + ", salary=" + salary + "]";
-	    }
 
 		public String getPassword() {
 			return password;
@@ -95,6 +72,13 @@ public class User {
 		public void setPassword(String password) {
 			this.password = password;
 		}
-	 
+
+		public Date getUltimoAcceso() {
+			return ultimoAcceso;
+		}
+
+		public void setUltimoAcceso(Date ultimoAcceso) {
+			this.ultimoAcceso = ultimoAcceso;
+		}
 	 
 	}
