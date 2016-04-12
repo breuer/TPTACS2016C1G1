@@ -44,7 +44,7 @@ public class Rest {
 	 * Lista todos los personajes
 	 * @return	status code más listado de los personajes
 	 */
-	@RequestMapping(value = "/usuarios/personajes", method = RequestMethod.GET)
+	@RequestMapping(value = "/personajes", method = RequestMethod.GET)
 	public ResponseEntity<List<Character>> getCharaters() {
 		List<Character> characters = characterService.findAllCharacters();
 		return new ResponseEntity<List<Character>>(characters, HttpStatus.FOUND);
@@ -55,7 +55,7 @@ public class Rest {
 	 * @param idPersonaje	es el id del personaje	
 	 * @return	status code NOT_FOUND/OK
 	 */
-	@RequestMapping(value = "/usuarios/personajesFavoritos/{idPersonaje}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/personajesFavoritos/{idPersonaje}", method = RequestMethod.PUT)
 	public ResponseEntity<String> markFavorite(@PathVariable  long idPersonaje) {
 		int result = characterService.markFavorite(idPersonaje);
 		if(result < 0)
@@ -68,7 +68,7 @@ public class Rest {
 	 * @param idPersonaje	es el id del personaje
 	 * @return	status code	NOT_FOUND/OK
 	 */
-	@RequestMapping(value = "/usuarios/personajesFavoritos/{idPersonaje}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/personajesFavoritos/{idPersonaje}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> unmarkFavorite(@PathVariable long idPersonaje) {
 		int result = characterService.unmarkFavorite(idPersonaje);
 		if(result < 0)
@@ -80,7 +80,7 @@ public class Rest {
 	 * Obtiene un listado con los personajes favoritos
 	 * @return	status code más listado con los personajes favoritos
 	 */
-	@RequestMapping(value = "/usuarios/personajesFavoritos", method = RequestMethod.GET)
+	@RequestMapping(value = "/personajesFavoritos", method = RequestMethod.GET)
 	public ResponseEntity<List<Character>> getFavorites() {
 		List<Character> characters = characterService.findAllFavorites();
 		return new ResponseEntity<List<Character>>(characters, HttpStatus.FOUND);
@@ -92,7 +92,7 @@ public class Rest {
 	 * @param nombreGrupo	es el nombre del grupo
 	 * @return status code
 	 */
-	@RequestMapping(value = "/usuarios/gruposPersonajes/{nombreGrupo}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/gruposPersonajes/{nombreGrupo}", method = RequestMethod.PUT)
 	public ResponseEntity<String> addGroup(@PathVariable String nombreGrupo) {
 		characterService.createGroup(nombreGrupo);
 		return new ResponseEntity<String>(HttpStatus.CREATED);
@@ -103,7 +103,7 @@ public class Rest {
 	 * @param nombreGrupo	es el nombre del grupo
 	 * @return	status code NOT_FOUND/FOUND más un grupo o no
 	 */
-	@RequestMapping(value = "/usuarios/gruposPersonajes/{nombreGrupo}", method = RequestMethod.GET)
+	@RequestMapping(value = "/gruposPersonajes/{nombreGrupo}", method = RequestMethod.GET)
 	public ResponseEntity<Group> getGroup(@PathVariable String nombreGrupo) {
 		Group group = characterService.getGroupByName(nombreGrupo);
 		if(group == null)
@@ -117,7 +117,7 @@ public class Rest {
 	 * @param idPersonaje	es el id de un personaje
 	 * @return	status code
 	 */
-	@RequestMapping(value = "/usuarios/gruposPersonajes/{nombreGrupo}/personaje/{idPersonaje}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/gruposPersonajes/{nombreGrupo}/personajes/{idPersonaje}", method = RequestMethod.PUT)
 	public ResponseEntity<String> addCharacterToGroup(@PathVariable String nombreGrupo, @PathVariable long idPersonaje) {
 		characterService.addCharacterToGroup(nombreGrupo, idPersonaje);
 		return new ResponseEntity<String>(HttpStatus.OK);
@@ -129,7 +129,7 @@ public class Rest {
 	 * @param idPersonaje	es el id de un personaje
 	 * @return	status code
 	 */
-	@RequestMapping(value = "/usuarios/gruposPersonajes/{nombreGrupo}/personaje/{idPersonaje}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/gruposPersonajes/{nombreGrupo}/personajes/{idPersonaje}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteCharacterFromGroup(@PathVariable String nombreGrupo, @PathVariable long idPersonaje) {
 		characterService.deleteCharacterFromGroup(nombreGrupo, idPersonaje);
 		return new ResponseEntity<String>(HttpStatus.OK);
@@ -183,7 +183,7 @@ public class Rest {
 	 * @param idGrupoPersonaje	es el id de un grupo 	
 	 * @return	status code   NOT_FOUND/FOUND más un grupo
 	 */
-	@RequestMapping(value = "/usuarios/gruposPersonajes/detalle/{idGrupoPersonaje}", method = RequestMethod.GET)
+	@RequestMapping(value = "/usuarios/gruposPersonajes/{idGrupoPersonaje}", method = RequestMethod.GET)
 	public ResponseEntity<Group> getInfoGroup(@PathVariable long idGrupoPersonaje) {
 		Group group = characterService.getGroupById(idGrupoPersonaje);
 		if(group == null)
@@ -205,4 +205,30 @@ public class Rest {
 		String ultimoAcceso = df.format(user.getUltimoAcceso());
 		return new ResponseEntity<String>(ultimoAcceso, HttpStatus.FOUND);
 	}
+	
+	/**
+	 * Devuelve una lista ranking de personajes según un filtro
+	 * @param order	filtro de la lista
+	 * @return	status code   NOT_FOUND/FOUND más la lista
+	 */
+	@RequestMapping(value = "/personajes", method = RequestMethod.GET)
+	public ResponseEntity<List<Character>> getRanking(@RequestParam("order") String order) {
+		List<Character> characters = characterService.getRankingByOrder(order);
+		return new ResponseEntity<List<Character>>(characters, HttpStatus.OK);
+	}
+	
+	/**
+	 * Devuelve una lista de personajes que es intersección de 2 listas grupo
+	 * @param idGrupo1	id del primer grupo
+	 * @param idGrupo2	ide del segundo grupo
+	 * @return	status code   NOT_FOUND/FOUND más la lista
+	 */	
+	@RequestMapping(value = "/gruposPersonajes/{idGrupo1}", method = RequestMethod.GET)
+	public ResponseEntity<List<Character>> getIntersection(@PathVariable long idGrupo1, @RequestParam("idGrupo2") long idGrupo2) {
+		List<Character> characters = characterService.getIntersection(idGrupo1, idGrupo2);
+		if(characters == null)
+			return new ResponseEntity<List<Character>>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<List<Character>>(characters, HttpStatus.FOUND);
+	}
+
 }

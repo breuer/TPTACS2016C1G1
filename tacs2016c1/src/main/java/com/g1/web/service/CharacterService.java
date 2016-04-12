@@ -1,8 +1,11 @@
 package com.g1.web.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -11,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.g1.web.model.User;
 import com.g1.web.model.Character;
-import com.g1.web.model.Group;;
+import com.g1.web.model.Group;
+import com.g1.web.pojo.CharacterRanking;
 
 @Service
 @Qualifier("characterService")
@@ -132,4 +136,30 @@ public class CharacterService {
 		return count;
 	}
 	
+	public List<Character> getRankingByOrder(String order) {
+		Map<Long, Integer> rankingMap = new HashMap<Long, Integer>();
+		Integer count = null;
+		for(Group g : groups) {
+			for(Character c : g.getCharacter()) {
+				count = rankingMap.get(c.getId());
+				if(count == null)
+					rankingMap.put(c.getId(), 1);
+				else{
+					rankingMap.put(c.getId(), count ++);
+				}				
+			}
+		}
+		/*Iterator i = rankingMap.entrySet().iterator();
+		List<CharacterRanking> cr = new ArrayList<CharacterRanking>();
+		while (i.hasNext()) {
+			Map.Entry e = (Map.Entry) i.next();
+			cr.add(new CharacterRanking(e.getKey(), ))
+		}*/
+		return null;
+	}
+	
+	public List<Character> getIntersection(long idGrupo1, long idGrupo2) {
+		
+		return null;
+	}
 }
