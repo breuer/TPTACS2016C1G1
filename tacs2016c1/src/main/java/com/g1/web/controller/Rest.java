@@ -44,7 +44,7 @@ public class Rest {
 	 * Lista todos los personajes
 	 * @return	status code más listado de los personajes
 	 */
-	@RequestMapping(value = "/personajes", method = RequestMethod.GET)
+	@RequestMapping(value = "/personajes/list", method = RequestMethod.GET)
 	public ResponseEntity<List<Character>> getCharaters() {
 		List<Character> characters = characterService.findAllCharacters();
 		return new ResponseEntity<List<Character>>(characters, HttpStatus.FOUND);

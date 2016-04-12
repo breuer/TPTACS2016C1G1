@@ -137,7 +137,7 @@ public class CharacterService {
 	}
 	
 	public List<Character> getRankingByOrder(String order) {
-		Map<Long, Integer> rankingMap = new HashMap<Long, Integer>();
+		/*Map<Long, Integer> rankingMap = new HashMap<Long, Integer>();
 		Integer count = null;
 		for(Group g : groups) {
 			for(Character c : g.getCharacter()) {
@@ -148,7 +148,7 @@ public class CharacterService {
 					rankingMap.put(c.getId(), count ++);
 				}				
 			}
-		}
+		}*/
 		/*Iterator i = rankingMap.entrySet().iterator();
 		List<CharacterRanking> cr = new ArrayList<CharacterRanking>();
 		while (i.hasNext()) {
