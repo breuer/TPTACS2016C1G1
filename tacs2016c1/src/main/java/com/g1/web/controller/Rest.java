@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.g1.web.model.User;
+
 import com.g1.web.model.Character;
 import com.g1.web.service.CharacterService;
 import com.g1.web.service.UserService;
 
 @RestController
 public class Rest {
-	
+
 	@Autowired
 	private UserService userService;
 	
@@ -31,9 +31,28 @@ public class Rest {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(value = "/personajes", method = RequestMethod.GET)
+	@RequestMapping(value = "/usuarios/personajes", method = RequestMethod.GET)
 	public ResponseEntity<List<Character>> getCharaters() {
 		List<Character> characters = characterService.findAllCharacters();
 		return new ResponseEntity<List<Character>>(characters, HttpStatus.OK);
 	}
+
+	@RequestMapping(value = "/usuarios/personajesFavoritos", method = RequestMethod.PUT)
+	public ResponseEntity<String> markFavorite(@RequestParam("idPersonaje") long id) {
+		characterService.markFavorite(id);;
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/usuarios/personajesFavoritos", method = RequestMethod.DELETE)
+	public ResponseEntity<String> unmarkFavorite(@RequestParam("idPersonaje") long id) {
+		characterService.unmarkFavorite(id);;
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/usuarios/personajesFavoritos", method = RequestMethod.GET)
+	public ResponseEntity<List<Character>> getFavorites() {
+		List<Character> characters = characterService.findAllFavorites();
+		return new ResponseEntity<List<Character>>(characters, HttpStatus.OK);
+	}
+
 }
