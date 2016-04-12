@@ -39,23 +39,29 @@ public class CharacterService {
         return characters;
     }
 	
-	public void markFavorite(long id) {
+	public int markFavorite(long id) {
+		int found = -1;
 		for (Character c : characters) {
 			if(c.getId() == id) {
 				favouriteCharacters.add(c);
+				found = 1;
 			}
 		}
+		return found;
 	}
 
-	public void unmarkFavorite(long id) {
+	public int unmarkFavorite(long id) {
 		Character cDelete = null;
+		int found = -1;
 		for (Character c : favouriteCharacters) {
 			if(c.getId() == id) {
+				found = 1;
 				cDelete = c;
 			}
 		}
-		if(cDelete != null)
-			favouriteCharacters.remove(cDelete);		
+		if(found > 0)
+			favouriteCharacters.remove(cDelete);
+		return found;
 	}
 
 	
