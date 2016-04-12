@@ -32,7 +32,7 @@ public class HelloRestController {
 		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/usuarios", method = RequestMethod.POST)
+	@RequestMapping(value = "/usuarios2", method = RequestMethod.POST)
 	public ResponseEntity<User> newUser(@RequestBody User usuario) {
 		return new ResponseEntity<User>(usuario, HttpStatus.CREATED);
 	}
