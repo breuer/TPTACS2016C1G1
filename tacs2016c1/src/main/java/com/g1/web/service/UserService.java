@@ -1,11 +1,11 @@
 package com.g1.web.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ public class UserService {
      
     public void saveUser(User user) {
         user.setId(counter.incrementAndGet());
-        user.setUltimoAcceso(new Date());
+        user.setUltimoAcceso(new DateTime());
         users.add(user);
     }
  
