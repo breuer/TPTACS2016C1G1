@@ -98,7 +98,7 @@ public class CharacterService {
 			if (g.getName().equals(name)){
 				for (Character c : characters) {
 					if(c.getId() == id) {
-						g.getCharacter().add(c);
+						g.getCharacters().add(c);
 					}
 				}			
 			}				
@@ -109,13 +109,13 @@ public class CharacterService {
 		for(Group g : groups) {
 			if (g.getName().equals(name)){
 				Character characterToDelete = null;
-				for (Character c : g.getCharacter()) {
+				for (Character c : g.getCharacters()) {
 					if(c.getId() == id) {
 						characterToDelete = c;
 					}
 				}
 				if (characterToDelete != null)
-					g.getCharacter().remove(characterToDelete);
+					g.getCharacters().remove(characterToDelete);
 			}				
 		}		
 	}
@@ -127,7 +127,7 @@ public class CharacterService {
 	public Integer countFavoriteCharacter() {
 		Integer count = 0;
 		for(Group g : groups) {
-			count += g.getCharacter().size();
+			count += g.getCharacters().size();
 		}
 		return count;
 	}

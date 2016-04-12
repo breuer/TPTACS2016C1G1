@@ -7,7 +7,7 @@ public class Group {
 
 	private long id;
 	private String name;
-	private Set<Character> character;
+	private Set<Character> characters = new HashSet<Character>();
 	
 	public Group(){
         id=0;
@@ -15,7 +15,6 @@ public class Group {
 	
 	public Group(String name) {
 		this.name = name;
-		this.character = new HashSet<Character>();
 	}
 	
 	public String getName() {
@@ -24,11 +23,11 @@ public class Group {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Set<Character> getCharacter() {
-		return character;
+	public Set<Character> getCharacters() {
+		return this.characters;
 	}
-	public void setCharacter(Set<Character> character) {
-		this.character = character;
+	public void addCharacter(Character character) {
+		this.characters.add(character);
 	}
 
 	public long getId() {
