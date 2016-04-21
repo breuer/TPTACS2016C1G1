@@ -2,8 +2,8 @@ package com.g1.web.model;
 
 import org.joda.time.DateTime;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
 
@@ -15,7 +15,7 @@ public class User {
 
     private DateTime ultimoAcceso;
 
-    private Set<Group> grupos= new HashSet<Group>();
+    private List<Character> favoritos = new ArrayList<>();
 
     public User() {
         id = 0;
@@ -31,7 +31,7 @@ public class User {
         this.username = username;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -58,10 +58,9 @@ public class User {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) // este override no soporta herencia
-            return false;
+        // este override no soporta herencia
+        return !(obj == null || obj.getClass() != getClass()) && ((User) obj).id == id;
 
-        return id == ((User)obj).id;
     }
 
     public String getPassword() {
@@ -80,8 +79,19 @@ public class User {
         this.ultimoAcceso = ultimoAcceso;
     }
 
-    public void addGroup(Group grupo) { this.grupos.add(grupo); }
+    public List<Character> getFavoritos() {
+        return favoritos;
+    }
 
-    public Set<Group> getGroups() { return this.grupos; }
+    public void addFavorito(Character character) {
+        this.favoritos.add(character);
+    }
 
+    public void removeFavorito(Character character) {
+        this.favoritos.remove(character);
+    }
+
+    public void setFavoritos(List<Character> favoritos) {
+        this.favoritos = favoritos;
+    }
 }
