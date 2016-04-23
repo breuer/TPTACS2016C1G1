@@ -5,7 +5,8 @@ public class Character {
 	private long id;
     
     private String name;
-     
+
+	private long ranking;
  
     public Character(){
         id=0;
@@ -16,7 +17,7 @@ public class Character {
     	this.id = id;
     }
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -30,5 +31,18 @@ public class Character {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public long getRanking() {
+		return ranking;
+	}
+
+	public void setRanking(long ranking) {
+		this.ranking = ranking;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return !(obj == null || obj.getClass() != getClass()) && ((Character) obj).id == id;
 	}
 }
