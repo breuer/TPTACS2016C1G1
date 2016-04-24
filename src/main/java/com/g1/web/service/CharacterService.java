@@ -4,8 +4,10 @@ import com.g1.web.model.Character;
 import com.g1.web.repository.CharacterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Comparator;
 import java.util.List;
 
@@ -13,18 +15,26 @@ import java.util.List;
 @Qualifier("characterService")
 public class CharacterService {
 
+    @Autowired
+    CharacterRepository characterRepository;
+
     public CharacterService() {
     }
 
+    @PostConstruct
+    private void Initialization() {
+    /*  -silverhati: como los objetos autowired se instancian luego del constructor,
+        meto creé un método de inicialización @PostConstruct. */
+
+        //Leer personajes de Marvel guardarlos en el repo
+        characterRepository.setAll(MarvelService.getAllCharacters());
+    }
     private enum Order {
         ID, NAME, RANKING
     }
 
-    @Autowired
-    CharacterRepository characterRepository;
-
     public List<Character> getAll() {
-        return characterRepository.getAll();
+        return characterRepository.getItems();
     }
 
     public Character getById(Long idPersonaje) {
