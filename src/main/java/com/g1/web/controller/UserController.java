@@ -88,7 +88,7 @@ public class UserController {
             if (Stream.of(fields).anyMatch(str -> str.equals("password")))
                 dtoUser.setPassword(user.getPassword());
             if (Stream.of(fields).anyMatch(str -> str.equals("ultimoAcceso")))
-                dtoUser.setUltimoAcceso(user.getUltimoAcceso());    // TODO falta formatear el datetime
+                dtoUser.setUltimoAcceso(user.getUltimoAcceso());
             if (Stream.of(fields).anyMatch(str -> str.equals("favoritos")))
                 dtoUser.setFavoritos(user.getFavoritos());
             user = dtoUser;
