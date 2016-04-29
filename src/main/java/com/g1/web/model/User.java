@@ -1,5 +1,7 @@
 package com.g1.web.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.g1.utils.CustomDateSerializer;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class User {
 
     private String password;
 
+    @JsonSerialize(using = CustomDateSerializer.class)
     private DateTime ultimoAcceso;
 
     private List<Character> favoritos = new ArrayList<>();
