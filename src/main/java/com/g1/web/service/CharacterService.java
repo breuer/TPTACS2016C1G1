@@ -1,5 +1,6 @@
 package com.g1.web.service;
 
+import com.g1.config.MarvelConfig;
 import com.g1.web.model.Character;
 import com.g1.web.repository.CharacterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class CharacterService {
 
     @Autowired
     CharacterRepository characterRepository;
+    @Autowired
+    MarvelService marvelService;
 
     public CharacterService() {
     }
@@ -27,7 +30,7 @@ public class CharacterService {
         meto creé un método de inicialización @PostConstruct. */
 
         //Leer personajes de Marvel guardarlos en el repo
-        characterRepository.setAll(MarvelService.getAllCharacters());
+        characterRepository.setAll(marvelService.getAllCharacters());
     }
     private enum Order {
         ID, NAME, RANKING

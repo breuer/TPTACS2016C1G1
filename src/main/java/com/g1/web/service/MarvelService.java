@@ -1,69 +1,68 @@
 package com.g1.web.service;
 
 import com.g1.web.model.Character;
+import com.g1.config.MarvelConfig;
 
+//import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.*;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
-
+@Service
 public class MarvelService {
-    private static String urlprefix = "http://gateway.marvel.com/";
-    private static String version = "v1";
-    private static String urlsufix = "?ts={ts}&apikey={publicKey}&hash={hash}";
-    private static String publicKey = "c87152306558584d78fa129dcf252cde";
-    private static String privateKey = "cbdbd8b46fd5da03f46483ada1ea246feab17fcb";
 
-    public static String apiKey(){
-        return publicKey;
+    private MarvelConfig marvelConfig;
+
+    public MarvelService() {
+        ApplicationContext applicationContext =
+                new ClassPathXmlApplicationContext("/MarvelConfig.xml");
+        marvelConfig = (MarvelConfig) applicationContext.getBean("MarvelConfig");
     }
 
-    private static String getCompleteURL(String inputStr){
-        String url = urlprefix;
-        url = url.concat(version);
+    private String getCompleteURL(String inputStr){
+        String url = marvelConfig.getUrlprefix();
+        url = url.concat(marvelConfig.getApiversion());
         url = url.concat("/public");
         //http://gateway.marvel.com/v1/public
         url = url.concat(inputStr);
-        url = url.concat(urlsufix);
+        url = url.concat(marvelConfig.getUrlsufix());
         //http://gateway.marvel.com/v1/public/inputStr?...
         return url;
     }
 
-    public static String dummyTs(){
+    public String dummyTs(){
         return "1"; //dummy time stamp
     }
 
-    public static String hashedString(String inputTs){
+    public String hashedString(String inputTs){
         String concatStr = inputTs;
-        concatStr = concatStr.concat(privateKey);
-        concatStr = concatStr.concat(publicKey);
+        concatStr = concatStr.concat(marvelConfig.getPrivateKey());
+        concatStr = concatStr.concat(marvelConfig.getPublicKey());
         return Hashing.MD5(concatStr);
     }
 
-    public static String charactersURL(){
+    public String charactersURL(){
         return getCompleteURL("/characters");
     }
 
-    public static List<Character> getAllCharacters(){
+    public List<Character> getAllCharacters(){
         RestTemplate restTemplate = new RestTemplate();
         String jsonStr = restTemplate.getForObject(charactersURL(),
                                                   String.class,
                                                   dummyTs(),
-                                                  apiKey(),
+                                                  marvelConfig.getPublicKey(),
                                                   hashedString(dummyTs()));
 
-        return getCharactersFromJsonStr(jsonStr);
+        return getObjectsFromJsonStr(jsonStr);
     }
 
-    private static List<Character> getCharactersFromJsonStr(String JsonStr){
+    private List<Character> getObjectsFromJsonStr(String JsonStr){
         List<Character> characters = new ArrayList<Character>();
 
         //create ObjectMapper instance
