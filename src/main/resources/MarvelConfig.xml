@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   					   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="MarvelConfig"
+          class="com.g1.config.MarvelConfig">
+        <property name="apiversion" value = "v1" />
+        <property name="urlprefix" value = "http://gateway.marvel.com/" />
+        <property name="urlsufix" value = "?ts={ts}&amp;apikey={publicKey}&amp;hash={hash}" />
+        <property name="publicKey" value = "c87152306558584d78fa129dcf252cde" />
+        <property name="privateKey" value = "cbdbd8b46fd5da03f46483ada1ea246feab17fcb" />
+
+    </bean>
+
+</beans>

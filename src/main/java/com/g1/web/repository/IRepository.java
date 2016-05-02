@@ -18,7 +18,7 @@ public abstract class IRepository<T> {
         return this;
     }
 
-    public List<T> getAll() {
+    public List<T> getItems() {
         return items;
     }
 

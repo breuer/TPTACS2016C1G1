@@ -26,7 +26,7 @@ public class GroupService {
     }
 
     public List<Group> getAll() {
-        return groupRepository.getAll();
+        return groupRepository.getItems();
     }
 
     public List<Group> getByUser(User user) {
