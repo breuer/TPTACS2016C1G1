@@ -4,6 +4,8 @@ import com.g1.HttpException;
 import com.g1.web.model.User;
 import com.g1.web.service.CharacterService;
 import com.g1.web.service.UserService;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import java.util.stream.Stream;
 @RestController("user")
 public class UserController {
 
+	private static final Logger logger = Logger.getLogger(UserController.class);
+	
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -32,6 +36,9 @@ public class UserController {
 			@RequestParam("username") String username,
 			@RequestParam("password") String password
 	) throws HttpException { // TODO error filters!
+		
+		logger.info("createUser request");
+		
 		if (username.trim().isEmpty())
 			return ResponseEntity
 					.status(HttpStatus.BAD_REQUEST)
