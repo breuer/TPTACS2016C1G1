@@ -29,6 +29,8 @@ public class ControllerTest {
     private WebApplicationContext ctx;
 	
     private MockMvc mockMvc;
+
+    private userService userServiceMock;
  
     @Before
     public void setUp() {
@@ -43,6 +45,56 @@ public class ControllerTest {
 
     	this.mockMvc.perform(builder)
     			.andExpect(MockMvcResultMatchers.status().isOk());	    	
+    }
+
+    @Test
+    public void testCharacterController () throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/personajes")
+                .accept(MediaType.APPLICATION_JSON);
+
+        this.mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void testFavoriteCharacterControllerNotFound () throw Exception {
+        when (userServiceMock.getByName(Jose)).thenThrow(new userServiceNotFound(""));
+
+        mockMvc.perform(get("/usuarios/{nombreUsuario}/personajesFavoritos", Jose))
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        verify(userServiceMock, times(1)).getByName(Jose);
+        verifyNoMoreInteractions(userServiceMock);
+    }
+
+    @Test
+    public void testFavoriteCharacterControllerFound () throw Exception {
+        User found = new userBuilder()
+                .name(Jose)
+                .build();
+
+        when (userServiceMock.getByName(Jose)).thenReturn(found);
+        mockMvc.perform(get("/usuarios/{nombreUsuario}/personajesFavoritos", Jose))
+                .andExpect(MockMvcResultMatchers.status().isOK());
+
+        verifyNoMoreInteractions(userServiceMock);
+    }
+
+    @Test
+    public void testUnmarkFavorite() throws Exception {
+
+        mockMvc.perform(delete("/usuarios/{nombreUsuario}/personajesFavoritos/{idPersonaje}", nombreUsuario, idPersonaje))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(encodeAuthorizationAccessToken(get("/users/{userId}", userId)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUnmarkFavorite() throws Exception {
+
+        mockMvc.perform(put("/usuarios/{nombreUsuario}/personajesFavoritos/{idPersonaje}", nombreUsuario, idPersonaje))
+                .andExpect(status().isNotFound());
     }
 
 }
