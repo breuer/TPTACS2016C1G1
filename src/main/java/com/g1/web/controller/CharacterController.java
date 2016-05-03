@@ -22,15 +22,30 @@ public class CharacterController {
      */
     @RequestMapping(value = "/personajes", method = RequestMethod.GET)
     public ResponseEntity getCharaters(
-            @RequestParam(value = "order", required = false, defaultValue = "") String order
+            @RequestParam(value = "order", required = false, defaultValue = "") String order,
+            @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+            @RequestParam(value = "limit", required = false, defaultValue = "0") int limit
     ) {
-        List<Character> characters = characterService.getAll();
+        List<Character> characters;
 
-        characters = characterService.OrderCharacters(characters, order);
+        try {
+            if (offset == 0 && limit == 0)
+                characters = characterService.getAll();
+            else
+                characters = characterService.get(offset, limit);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(characters);
+            characters = characterService.OrderCharacters(characters, order);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(characters);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(e.getMessage());
+        }
+
     }
 
     /**

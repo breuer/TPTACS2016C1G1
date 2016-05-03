@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.annotation.PostConstruct;
 import java.util.Comparator;
@@ -29,8 +31,15 @@ public class CharacterService {
     /*  -silverhati: como los objetos autowired se instancian luego del constructor,
         meto creé un método de inicialización @PostConstruct. */
 
-        //Leer personajes de Marvel guardarlos en el repo
-        characterRepository.setAll(marvelService.getAllCharacters());
+        try {
+            //Leer personajes de Marvel guardarlos en el repo
+            characterRepository.setAll(marvelService.getAllCharacters());
+        }
+        catch (HttpServerErrorException e) {
+        // TODO: completar con algo (log?)
+        } catch (HttpClientErrorException e) {
+        // TODO: completar con algo (log?)
+        }
     }
     private enum Order {
         ID, NAME, RANKING
@@ -38,6 +47,15 @@ public class CharacterService {
 
     public List<Character> getAll() {
         return characterRepository.getItems();
+    }
+
+    public List<Character> get(int offset, int limit) {
+        try {
+            return characterRepository.getItems(offset, limit);
+        }
+        catch (IllegalArgumentException e){
+            throw e;
+        }
     }
 
     public Character getById(Long idPersonaje) {

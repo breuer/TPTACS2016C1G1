@@ -9,6 +9,8 @@ public class Character {
 	private String thumbnail; //link de la foto
 	private long ranking;
 	private long likes; //cantidad de likes (= gente que lo marcó como favorito)
+	//TODO: agregar un like cuando el usuario lo agrega como favorito / sacar like cuando deja de ser favorito
+	//la idea de los "likes" es que nos ayude a calcular el ranking
 
     public Character(){
         id=0;

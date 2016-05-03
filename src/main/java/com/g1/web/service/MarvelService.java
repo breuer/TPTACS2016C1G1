@@ -2,14 +2,18 @@ package com.g1.web.service;
 
 import com.g1.web.model.Character;
 import com.g1.config.MarvelConfig;
-
+import org.joda.time.DateTime;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import java.util.*;
 import java.io.IOException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,7 +29,7 @@ public class MarvelService {
         marvelConfig = (MarvelConfig) applicationContext.getBean("MarvelConfig");
     }
 
-    private String getCompleteURL(String inputStr){
+    private String getCompleteURL(String inputStr) {
         String url = marvelConfig.getUrlprefix();
         url = url.concat(marvelConfig.getApiversion());
         url = url.concat("/public");
@@ -36,45 +40,107 @@ public class MarvelService {
         return url;
     }
 
-    public String dummyTs(){
+    public String dummyTs() {
         return "1"; //dummy time stamp
     }
 
-    public String hashedString(String inputTs){
+    public String hashedString(String inputTs) {
         String concatStr = inputTs;
         concatStr = concatStr.concat(marvelConfig.getPrivateKey());
         concatStr = concatStr.concat(marvelConfig.getPublicKey());
         return Hashing.MD5(concatStr);
     }
 
-    public String charactersURL(){
-        return getCompleteURL("/characters");
+    public String charactersURL(boolean addOffset, boolean addLimit) {
+        String charactersStr = "/characters";
+        if (addLimit)
+            charactersStr = charactersStr.concat("?&offset={offset}");
+
+        if (addOffset)
+            charactersStr = charactersStr.concat("?&limit={limit}");
+
+        return getCompleteURL(charactersStr);
     }
 
-    public List<Character> getAllCharacters(){
+    public List<Character> getAllCharacters() {
+
+        List<Character> characters = new ArrayList<Character>();
         RestTemplate restTemplate = new RestTemplate();
-        String jsonStr = restTemplate.getForObject(charactersURL(),
-                                                  String.class,
-                                                  dummyTs(),
-                                                  marvelConfig.getPublicKey(),
-                                                  hashedString(dummyTs()));
+        String jsonStr;
+        int charactersAmt;
+        int offset = 0;
+        int limit = 20;
+        DateTime timestamp;
 
-        return getObjectsFromJsonStr(jsonStr);
+        try {
+            do {
+                timestamp = new DateTime();
+                jsonStr = restTemplate.getForObject(charactersURL(true, true),
+                        String.class,
+                        offset,
+                        limit,
+                        timestamp,
+                        marvelConfig.getPublicKey(),
+                        hashedString(timestamp.toString()));
+
+                charactersAmt = getCountFromJsonStr(jsonStr);
+                if (charactersAmt != 0) {
+                    characters.addAll(getObjectsFromJsonStr(jsonStr));
+                    offset += limit;
+                }
+            } while (charactersAmt != 0);
+        } catch (HttpServerErrorException e) {
+            //TODO: ver
+            return characters;
+        } catch (HttpClientErrorException e) {
+            //TODO: ver
+            return characters;
+        }
+        return characters;
     }
 
-    private List<Character> getObjectsFromJsonStr(String JsonStr){
+    public List<Character> getCharacters(int offset, int limit) {
+        boolean addOffset = false;
+        boolean addLimit = false;
+
+        if (offset != 0) addOffset = true;
+        if (limit != 0) addLimit = true;
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, String> vars = new HashMap<String, String>();
+            if (addOffset)
+                vars.put("offset", Integer.toString(offset));
+            if (addLimit)
+                vars.put("limit", Integer.toString(limit));
+            vars.put ("ts", dummyTs());
+            vars.put("publicKey", marvelConfig.getPublicKey());
+            vars.put("hash", hashedString(dummyTs()));
+
+            String jsonStr = restTemplate.getForObject(charactersURL(addOffset, addLimit),
+                    String.class,
+                    vars);
+            return getObjectsFromJsonStr(jsonStr);
+        } catch (HttpServerErrorException e) {
+            throw e;
+        } catch (HttpClientErrorException e) {
+            throw e;
+        }
+    }
+
+    private List<Character> getObjectsFromJsonStr(String JsonStr) {
         List<Character> characters = new ArrayList<Character>();
 
         //create ObjectMapper instance
         ObjectMapper objectMapper = new ObjectMapper();
-        //read JSON like DOM Parser
-        JsonNode rootNode;
+
         try {
-            rootNode = objectMapper.readTree(JsonStr);
+            //read JSON like DOM Parser
+            JsonNode rootNode = objectMapper.readTree(JsonStr);
             JsonNode dataNode = rootNode.path("data");
             JsonNode resultsNode = dataNode.path("results");
             Iterator<JsonNode> elements = resultsNode.elements();
-            while(elements.hasNext()){
+            while (elements.hasNext()) {
                 JsonNode result = elements.next();
 
                 JsonNode thumbnail = result.path("thumbnail");
@@ -92,5 +158,25 @@ public class MarvelService {
             e.printStackTrace();
         }
         return characters;
+    }
+
+    private int getCountFromJsonStr(String JsonStr) {
+        //create ObjectMapper instance
+        ObjectMapper objectMapper = new ObjectMapper();
+        int count = -1;
+
+        try {
+            //read JSON like DOM Parser
+            JsonNode rootNode = objectMapper.readTree(JsonStr);
+            JsonNode dataNode = rootNode.path("data");
+            count = dataNode.path("count").asInt();
+        } catch (JsonProcessingException e) {
+            // Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // Auto-generated catch block
+            e.printStackTrace();
+        }
+        return count;
     }
 }
